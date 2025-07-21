@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Weather App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #89f7fe, #66a6ff);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .weather-container {
+      background: rgb(255, 255, 255);
+      padding: 30px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      width: 300px;
+    }
+
+    input {
+      padding: 10px;
+      width: 80%;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      padding: 10px 15px;
+      background-color: #414643;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #weatherResult {
+      margin-top: 20px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="weather-container">
+    <h1>Check Weather</h1>
+    <input type="text" id="cityInput" placeholder="Enter city name">
+    <br>
+    <button onclick="getWeather()">Get Weather</button>
+    <div id="weatherResult"></div>
+  </div>
+
+  <script>
+    async function getWeather() {
+  const city = document.getElementById("cityInput").value.trim();
+  const apiKey = "df96ab0f36cd440c8e784537252107";
+
+  const resultDiv = document.getElementById("weatherResult");
+
+  if (!city) {
+    resultDiv.innerHTML = "Please enter a city name.";
+    return;
+  }
+
+  const url = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${city}&aqi=yes`;
+
+  try {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error("City not found");
+
+    const data = await response.json();
+    const { location, current } = data;
+
+    resultDiv.innerHTML = `
+      <h2>Weather in ${location.name}</h2>
+      <p><strong>Temperature:</strong> ${current.temp_c} °C</p>
+      <p><strong>Condition:</strong> ${current.condition.text}</p>
+      <p><strong>Humidity:</strong> ${current.humidity}%</p>
+      <p><strong>Wind:</strong> ${current.wind_kph} kph</p>
+    `;
+  } catch (error) {
+    resultDiv.innerHTML = `<p>Error: ${error.message}</p>`;
+  }
+}
+
+  </script>
+</body>
+</html>
